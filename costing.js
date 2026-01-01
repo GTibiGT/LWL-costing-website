@@ -34,28 +34,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Submit to Flask API
   form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const data = Object.fromEntries(new FormData(form).entries());
-    statusEl.textContent = "Saving...";
+  const data = Object.fromEntries(new FormData(form).entries());
+  statusEl.textContent = "Saving...";
 
-    try {
-      const res = await fetch("/api/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+  try {
+    const res = await fetch("/api/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
 
-      const payload = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        throw new Error(payload.error || "Failed to save");
-      }
-
-      statusEl.textContent = `Saved (ID ${payload.id}). Base USD: ${payload.base_total_usd}`;
-      totalPriceEl.textContent = `${payload.total_price} ${payload.currency}`.trim();
-    } catch (err) {
-      statusEl.textContent = "Error: " + err.message;
+    // If Flask returned an error, show it
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || "Failed to save");
     }
-  });
+
+    const result = await res.json(); // ✅ result exists only here
+
+    // ✅ USD-only fields (no currency)
+    statusEl.textContent =
+      `Saved (ID ${result.id}). Cost per ball (USD): ${result.per_ball_usd}`;
+
+    // If you have an output for total
+    const totalPriceEl = document.getElementById("totalPrice");
+    if (totalPriceEl) {
+      totalPriceEl.textContent =
+        `Total for ${result.quantity} balls: ${result.total_for_quantity_usd} USD`;
+    }
+
+  } catch (err) {
+    //do NOT reference "result" here
+    statusEl.textContent = "Error: " + err.message;
+  }
+});
+
 });
