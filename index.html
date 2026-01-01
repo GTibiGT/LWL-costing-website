@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leatherware Ball Costing</title>
+</head>
+<body>
+
+  <h1>Leatherware Soccerball Costing Calculator</h1>
+
+  <form id="costForm">
+
+    <section>
+      <h2>Product Information</h2>
+
+      <label for="cons">Construction/Process:</label>
+      <select name="process" id="cons">
+        <option value="COT-B">COT-B</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="Foam">Foam Filled</option>
+        <option value="Machine">Machine Stitched</option>
+        <option value="Hand">Hand Stitched</option>
+      </select>
+
+      <br><br>
+
+      <label for="supplier">Supplier:</label>
+      <select name="supplier" id="supplier">
+        <option value="Teijin">Teijin (Japanese)</option>
+        <option value="SanFang">San Fang (Taiwanese)</option>
+        <option value="Anli">Anli (Chinese)</option>
+      </select>
+
+      <br><br>
+
+      <label for="thick">Material Thickness:</label>
+      <select name="material_thickness" id="thick">
+        <option value="0.7">0.7mm</option>
+        <option value="1.0">1.0mm</option>
+        <option value="1.2">1.2mm</option>
+      </select>
+
+      <br><br>
+
+      <label for="foam">Foam Thickness:</label>
+      <select name="foam_thickness" id="foam">
+        <option value="2.0">2.0mm</option>
+        <option value="2.5">2.5mm</option>
+        <option value="3.0">3.0mm</option>
+        <option value="3.5">3.5mm</option>
+        <option value="4.0">4.0mm</option>
+      </select>
+
+      <br><br>
+
+      <label for="blads">Bladder type:</label>
+      <select name="bladder_type" id="blads">
+        <option value="Wound_SR">TWB Wound SR</option>
+        <option value="Wound_B30">TWB Wound B30</option>
+        <option value="Patch">TWB Patch</option>
+        <option value="Self_Patch">TWB Self Patch</option>
+      </select>
+
+      <br><br>
+
+      <label for="currency">Currency:</label>
+      <select name="currency" id="currency">
+        <option value="USD">USD</option>
+        <option value="PKR">PKR</option>
+        <option value="EUR">EUR</option>
+      </select>
+    </section>
+
+    <br><br>
+
+    <button type="submit">Calculate</button>
+    <button type="button" id="resetBtn">Reset</button>
+
+    <br><br>
+
+    <p id="status"></p>
+
+    <p>
+      <strong>Total price:</strong>
+      <output id="totalPrice" name="total_price">0</output>
+    </p>
+
+  </form>
+
+  <hr>
+
+  <script src="{{ url_for('static', filename='js/costing.js') }}"></script>
+</body>
+</html>
