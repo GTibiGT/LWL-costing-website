@@ -1,0 +1,176 @@
+/* Base reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page base */
+body {
+  background-color: #fff;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  line-height: 1.6;
+  padding: 40px;
+}
+
+/* Headings */
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+}
+
+/* Sections */
+section {
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+/* Labels & inputs */
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+select,
+input[type="number"],
+input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  padding: 8px 14px;
+  font-size: 1rem;
+  border: 1px solid #333;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+button:hover {
+  background: #f3f3f3;
+}
+
+/* Output / results */
+output {
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+/* Status text */
+#status {
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+
+/* Divider */
+hr {
+  margin-top: 40px;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* Sticky top navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 84px;
+  background: #101425;          /* dark navy like lwl website */
+  color: #fff;
+  z-index: 1000;
+}
+
+.nav-inner {
+  max-width: 1100px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand (logo + text) */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.logo-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #101425;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  letter-spacing: 0.5px;
+}
+
+.brand-text {
+  font-size: 42px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* Hamburger button */
+.menu-btn {
+  width: 52px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  display: grid;
+  align-content: center;
+  gap: 7px;
+}
+
+.menu-btn .bar {
+  display: block;
+  width: 30px;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* IMPORTANT: push page content below fixed navbar */
+body {
+  padding-top: 84px; /* same as navbar height */
+}
+
+/* Mobile sizing (so LEATHERWARE fits) */
+@media (max-width: 600px) {
+  .brand-text { font-size: 26px; }
+  .logo-box { width: 44px; height: 44px; }
+  .navbar { height: 72px; }
+  body { padding-top: 72px; }
+}
