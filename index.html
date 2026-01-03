@@ -3,10 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <title>Leatherware Ball Costing</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+  <header class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img class="logo" src="{{ url_for('static', filename='LWLlogo.png') }}" alt="Leatherware logo">
+      <span class="brand-text">LEATHERWARE</span>
+    </a>
+  </div>
+</header>
 
-  <h1>Leatherware Soccerball Costing Calculator</h1>
+<main class="page">
+  <h1>Soccerball Costing Calculator</h1>
 
   <form id="costForm">
 
@@ -16,9 +26,11 @@
       <label for="cons">Construction/Process:</label>
       <select name="process" id="cons">
         <option value="COT-B">COT-B</option>
-        <option value="Hybrid">Hybrid</option>
-        <option value="Foam">Foam Filled</option>
-        <option value="Machine">Machine Stitched</option>
+        <option value="COT-B LFB">COT-B LFB</option>
+        <option value="Hybrid G-2">Hybrid G-2</option>
+        <option value="Hybrid G-1">Hybrid G-1</option>
+        <option value="Hybrid G-1 Light">Hybrid G-1 Light</option>
+        <option value="Machine">Machine</option>
         <option value="Hand">Hand Stitched</option>
       </select>
 
@@ -57,8 +69,30 @@
       <select name="bladder_type" id="blads">
         <option value="Wound_SR">TWB Wound SR</option>
         <option value="Wound_B30">TWB Wound B30</option>
+        <option value="Wound_B50">TWB Wound B50</option>
+        <option value="Wound_B80">TWB Wound B80</option>
         <option value="Patch">TWB Patch</option>
         <option value="Self_Patch">TWB Self Patch</option>
+        <option value="foam_filled">Foam Filled</option>
+      </select>
+
+      <br><br>
+
+      <label for="Pconfig">Panel Configuration:</label>
+      <select name="panel_config" id="Pconfig">
+        <option value="32">32 Panels</option>
+        <option value="30">30 Panels</option>
+        <option value="28">28 Panels</option>
+        <option value="24">24 Panels</option>
+        <option value="22">22 Panels</option>
+        <option value="20">20 Panels</option>
+        <option value="18">18 Panels</option>
+        <option value="14">14 Panels</option>
+        <option value="12">12 Panels</option>
+        <option value="10">10 Panels</option>
+        <option value="8">8 Panels</option>
+        <option value="6">6 Panels</option>
+        <option value="4">4 Panels</option>
       </select>
 
       <br><br>
@@ -67,8 +101,6 @@
       <input type="number" id="quantity" name="quantity" min="1" step="1" value="1" />
 
     </section>
-
-    <br><br>
 
     <button type="submit">Calculate</button>
     <button type="button" id="resetBtn">Reset</button>
@@ -85,6 +117,7 @@
   </form>
 
   <hr>
+</main>
 
   <script src="{{ url_for('static', filename='js/costing.js') }}"></script>
 </body>

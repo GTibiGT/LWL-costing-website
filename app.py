@@ -9,8 +9,10 @@ DB_PATH = Path("costing.db")
 # ---- Cost tables (USD) ----
 PROCESS_COST = {
     "COT-B": 0.0,
-    "Hybrid": 0.0,
-    "Foam": 0.0,
+    "COT-B LFB": 0.0,
+    "Hybrid G-2": 0.0,
+    "Hybrid G-1": 0.0,
+    "Hybrid G-1 Light": 0.0,
     "Machine": 0.0,
     "Hand": 0.0,
 }
@@ -38,44 +40,52 @@ FOAM_THICKNESS_COST = {
 BLADDER_COST = {
     "Wound_SR": 2.0,
     "Wound_B30": 2.5,
+    "Wound_B50": 2.7,
+    "Wound_B80": 2.9,
     "Patch": 3.5,
     "Self_Patch": 3.0,
+    "Foam Filled": 1.8,
+}
+
+PANEL_COST = {
+    32: 0.0,
+    30: 0.0,
+    28: 0.0,
+    24: 0.0,
+    22: 0.0,
+    20: 0.0,
+    18: 0.0,
+    14: 0.0,
+    12: 0.0,
+    10: 0.0,
+    8: 0.0,
+    6: 0.0,
+    4: 0.0,
 }
 
 LABOR_COST_PER_BALL = 1.0
 OVERHEAD_COST_PER_BALL = 1.0
 
 
+import sqlite3
+from pathlib import Path
+
+DB_PATH = Path("costing.db")
+SCHEMA_PATH = Path("schema.sql")
+
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-
 def init_db():
     conn = get_db()
-    conn.execute("""
-         CREATE TABLE IF NOT EXISTS submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-
-            process TEXT NOT NULL,
-            supplier TEXT NOT NULL,
-            material_thickness REAL NOT NULL,
-            foam_thickness REAL NOT NULL,
-            bladder_type TEXT NOT NULL,
-
-            quantity INTEGER NOT NULL,
-            base_per_ball_usd REAL NOT NULL,
-            total_for_quantity REAL NOT NULL
-        )
-    """)
+    conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
     conn.commit()
     conn.close()
 
-
 def compute_base_total_usd(process: str, supplier: str, material_thickness: float,
-                           foam_thickness: float, bladder_type: str) -> float:
+                           foam_thickness: float, bladder_type: str, panel_config: int) -> float:
     """Compute base total in USD from selections."""
     return (
         PROCESS_COST[process]
@@ -85,6 +95,7 @@ def compute_base_total_usd(process: str, supplier: str, material_thickness: floa
         + BLADDER_COST[bladder_type]
         + LABOR_COST_PER_BALL
         + OVERHEAD_COST_PER_BALL
+        + PANEL_COST[panel_config]
     )
 
 
@@ -97,7 +108,7 @@ def home():
 def api_save():
     data = request.get_json(silent=True) or {}
 
-    required = ["process", "supplier", "material_thickness", "foam_thickness", "bladder_type"]
+    required = ["process", "supplier", "material_thickness", "foam_thickness", "bladder_type", "panel_config"]
     missing = [k for k in required if not data.get(k)]
     if missing:
         return jsonify({"error": f"Missing fields: {', '.join(missing)}"}), 400
@@ -105,8 +116,9 @@ def api_save():
     try:
         material_thickness = float(data["material_thickness"])
         foam_thickness = float(data["foam_thickness"])
+        panel_config = int(data["panel_config"])
     except ValueError:
-        return jsonify({"error": "Thickness values must be numbers"}), 400
+        return jsonify({"error": "Thickness values must be numbers or panel configuration must be numbers"}), 400
 
     try:
         quantity = int(data.get("quantity", 1))
@@ -124,6 +136,7 @@ def api_save():
                 material_thickness=material_thickness,
                 foam_thickness=foam_thickness,
                 bladder_type=data["bladder_type"],
+                panel_config=panel_config,
             ),
             2
         )
@@ -136,21 +149,24 @@ def api_save():
     # ---- Save to DB ----
     conn = get_db()
     cur = conn.execute("""
-        INSERT INTO submissions (
-            process, supplier, material_thickness, foam_thickness,
-            bladder_type, quantity, base_per_ball_usd, total_for_quantity
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        data["process"],
-        data["supplier"],
-        material_thickness,
-        foam_thickness,
-        data["bladder_type"],
-        quantity,
-        base_per_ball_usd,
-        total_for_quantity
-    ))
+    INSERT INTO submissions (
+        process, supplier, material_thickness, foam_thickness,
+        bladder_type, panel_config, quantity,
+        base_per_ball_usd, total_for_quantity_usd
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+""", (
+    data["process"],
+    data["supplier"],
+    material_thickness,
+    foam_thickness,
+    data["bladder_type"],
+    panel_config,
+    quantity,
+    base_per_ball_usd,
+    total_for_quantity
+))
+        
     conn.commit()
     new_id = cur.lastrowid
     conn.close()
@@ -164,7 +180,20 @@ def api_save():
     })
 
 
+#the link for submissions
+#http://127.0.0.1:5000/api/submissions
 
+@app.route("/submissions")
+def submissions():
+    conn = get_db()
+    rows = conn.execute("""
+        SELECT *
+        FROM submissions
+        ORDER BY created_at DESC
+    """).fetchall()
+    conn.close()
+
+    return render_template("submissions.html", rows=rows)
 
 if __name__ == "__main__":
     init_db()

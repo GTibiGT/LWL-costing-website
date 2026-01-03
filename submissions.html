@@ -1,0 +1,34 @@
+<!--the link for submissions-->
+<!--http://127.0.0.1:5000/api/submissions-->
+
+<h1>Saved Costings</h1>
+<table border="1">
+  <tr>
+    <th>ID</th>
+      <th>Date</th>
+      <th>Process</th>
+      <th>Supplier</th>
+      <th>Material Thickness</th>
+      <th>Foam Thickness</th>
+      <th>Bladder Type</th>
+      <th>Panels</th>
+      <th>Qty</th>
+      <th>Per Ball</th>
+      <th>Total</th>
+  </tr>
+  {% for r in rows %}
+  <tr>
+    <td>{{ r.id }}</td>
+    <td>{{ r.created_at }}</td>
+    <td>{{ r.process }}</td>
+    <td>{{ r.supplier }}</td>
+    <td>{{ r.material_thickness }}</td>
+    <td>{{ r.foam_thickness }}</td>
+    <td>{{ r.bladder_type }}</td>
+    <td>{{ r.panel_config }}</td>
+    <td>{{ r.quantity }}</td>
+    <td>${{ r.base_per_ball_usd }}</td>
+    <td>${{ r.total_for_quantity_usd }}</td>
+  </tr>
+  {% endfor %}
+</table>
